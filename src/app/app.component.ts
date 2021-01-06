@@ -78,36 +78,57 @@ export class AppComponent implements OnInit {
   //#endregion 'Angular LifeCycle'
 
   //#region 'General Methods'
-  private get_random() {
-    let r = Math.floor(Math.random() * (54 - 1 + 1) + 1);
-    let m = this.card.filter((obj) => obj[0] === r);
-    while (m.length > 0) {
-      r = Math.floor(Math.random() * (54 - 1 + 1) + 1);
-      m = this.card.filter((obj) => obj[0] === r);
+  private get_random(min: number, max: number, invalid: number) {
+    let random = Math.floor(Math.random() * (max - min + 1) + min);
+    let exist = this.card.filter((obj) => obj[0] === random);
+    while (exist.length > 0 || invalid == random) {
+      random = Math.floor(Math.random() * (max - min + 1) + min);
+      exist = this.card.filter((obj) => obj[0] === random);
     }
-    return r;
+    return random;
   }
 
   private get_position() {
     return Math.floor(Math.random() * (16 - 1 + 1) + 1);
   }
 
-  private create_card() {
+  private get_min_max(index: number) {
+    let min = 0;
+    let max = 0;
+
+    if (index == 1 || index == 5 || index == 9 || index == 13) {
+      min = 1;
+      max = 14;
+    } else if (index == 2 || index == 6 || index == 10 || index == 14) {
+      min = 15;
+      max = 28;
+    } else if (index == 3 || index == 7 || index == 11 || index == 15) {
+      min = 29;
+      max = 36;
+    } else {
+      min = 37;
+      max = 54;
+    }
+
+    return { min, max };
+  }
+
+  private create_card(invalid: number) {
     this.card = [];
-    let p = 0;
+    let position = 0;
     for (let i = 1; i < 16; i++) {
-      let r = this.get_random();
-      const lote = this.loteria.filter((obj) => obj[0] === r)[0];
+      let min_max = this.get_min_max(i);
+      let random = this.get_random(min_max.min, min_max.max, invalid);
+      let lote = this.loteria.filter((obj) => obj[0] === random)[0];
       if (i < 15) {
         this.card.push(lote);
       } else {
-        console.log('r => ', lote);
-        p = undefined;
-        p = this.get_position();
-        this.card.splice(p, 0, lote);
-        p = undefined;
-        p = this.get_position();
-        this.card.splice(p, 0, lote);
+        lote = this.loteria.filter((obj) => obj[0] === invalid)[0];
+        console.log('lote => ', lote);
+        position = this.get_position();
+        this.card.splice(position, 0, lote);
+        position = this.get_position();
+        this.card.splice(position, 0, lote);
       }
     }
   }
@@ -116,21 +137,19 @@ export class AppComponent implements OnInit {
     this.cards = [];
     this.cards_ordered = [];
     console.clear();
-    for (let i = 1; i <= 4; i++) {
-      this.create_card();
-      let d = JSON.parse(JSON.stringify(this.card));
-      d.sort();
-      while (this.cards_ordered.filter((obj) => obj === d).length > 0) {
-        this.create_card();
-        d = JSON.parse(JSON.stringify(this.card));
-        d.sort();
+    for (let i = 1; i <= 54; i++) {
+      this.create_card(i);
+      let card_copy = JSON.parse(JSON.stringify(this.card));
+      card_copy.sort();
+      while (this.cards_ordered.filter((obj) => obj === card_copy).length > 0) {
+        this.create_card(i);
+        card_copy = JSON.parse(JSON.stringify(this.card));
+        card_copy.sort();
       }
 
       this.cards.push(JSON.parse(JSON.stringify(this.card)));
-      this.cards_ordered.push(d);
+      this.cards_ordered.push(card_copy);
     }
-    console.log('this.cards => ', this.cards);
-    console.log('this.cards_ordered => ', this.cards_ordered);
   }
   //#endregion 'General Methods'
 }
