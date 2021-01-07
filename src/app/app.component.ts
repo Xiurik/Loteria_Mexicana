@@ -137,7 +137,7 @@ export class AppComponent implements OnInit {
     this.cards = [];
     this.cards_ordered = [];
     console.clear();
-    for (let i = 1; i <= 54; i++) {
+    for (let i = 1; i <= 4; i++) {
       this.create_card(i);
       let card_copy = JSON.parse(JSON.stringify(this.card));
       card_copy.sort();
