@@ -67,6 +67,8 @@ export class AppComponent implements OnInit {
   public card: any[] = [];
   public cards: any[] = [];
   public cards_ordered: any[] = [];
+
+  public name_top = 'Ana Catalina Valdez Martinez';
   //#endregion 'Variables'
 
   //#region 'Angular LifeCycle'
@@ -74,6 +76,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.create_cards();
+    // this.create_specific_cards();
   }
   //#endregion 'Angular LifeCycle'
 
@@ -86,10 +89,6 @@ export class AppComponent implements OnInit {
       exist = this.card.filter((obj) => obj[0] === random);
     }
     return random;
-  }
-
-  private get_position() {
-    return Math.floor(Math.random() * (16 - 1 + 1) + 1);
   }
 
   private get_min_max(index: number) {
@@ -115,7 +114,6 @@ export class AppComponent implements OnInit {
 
   private create_card(invalid: number) {
     this.card = [];
-    let position = 0;
     for (let i = 1; i < 16; i++) {
       let min_max = this.get_min_max(i);
       let random = this.get_random(min_max.min, min_max.max, invalid);
@@ -125,10 +123,8 @@ export class AppComponent implements OnInit {
       } else {
         lote = this.loteria.filter((obj) => obj[0] === invalid)[0];
         console.log('lote => ', lote);
-        position = this.get_position();
-        this.card.splice(position, 0, lote);
-        position = this.get_position();
-        this.card.splice(position, 0, lote);
+        this.card.splice(5, 0, lote);
+        this.card.splice(10, 0, lote);
       }
     }
   }
@@ -136,8 +132,8 @@ export class AppComponent implements OnInit {
   public create_cards() {
     this.cards = [];
     this.cards_ordered = [];
-    console.clear();
-    for (let i = 1; i <= 4; i++) {
+
+    for (let i = 1; i <= 54; i++) {
       this.create_card(i);
       let card_copy = JSON.parse(JSON.stringify(this.card));
       card_copy.sort();
@@ -149,6 +145,33 @@ export class AppComponent implements OnInit {
 
       this.cards.push(JSON.parse(JSON.stringify(this.card)));
       this.cards_ordered.push(card_copy);
+    }
+  }
+
+  public create_specific_cards() {
+    this.name_top = 'Lidia Martinez Garcia';
+    this.cards = [];
+    this.cards_ordered = [];
+
+    const personal_cards = [
+      [15, 52, 33, 23, 17, 44, 8, 1, 18, 32, 44, 13, 35, 19, 9, 24],
+      [25, 11, 13, 48, 41, 37, 53, 16, 7, 37, 36, 47, 49, 50, 54, 20],
+      [14, 17, 20, 22, 16, 45, 52, 47, 3, 21, 45, 18, 10, 33, 38, 19],
+      [12, 3, 48, 39, 10, 53, 54, 45, 13, 4, 54, 50, 33, 24, 16, 23],
+      [8, 46, 7, 29, 22, 35, 23, 21, 31, 26, 35, 16, 17, 41, 47, 52],
+      [31, 29, 47, 2, 6, 43, 30, 42, 25, 44, 43, 20, 21, 28, 26, 53],
+      [44, 42, 7, 8, 45, 23, 35, 41, 1, 46, 23, 18, 50, 14, 9, 43],
+      [27, 10, 29, 28, 31, 11, 15, 12, 26, 49, 11, 34, 17, 51, 52, 32],
+    ];
+
+    for (let i = 0; i < personal_cards.length; i++) {
+      const element = personal_cards[i];
+      this.card = [];
+      element.forEach((t) => {
+        let lote = this.loteria.filter((obj) => obj[0] === t)[0];
+        this.card.push(lote);
+      });
+      this.cards.push(JSON.parse(JSON.stringify(this.card)));
     }
   }
   //#endregion 'General Methods'
