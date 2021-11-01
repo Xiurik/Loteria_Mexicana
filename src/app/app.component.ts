@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
   public cards: any[] = [];
   public cards_ordered: any[] = [];
 
-  public name_top = 'Ana Catalina Valdez Martinez';
+  public name_top = 'Frida Sofia Lopez Rodriguez';
   //#endregion 'Variables'
 
   //#region 'Angular LifeCycle'
@@ -115,14 +115,14 @@ export class AppComponent implements OnInit {
   private create_card(invalid: number) {
     this.card = [];
     for (let i = 1; i < 16; i++) {
-      let min_max = this.get_min_max(i);
-      let random = this.get_random(min_max.min, min_max.max, invalid);
+      // let min_max = this.get_min_max(i);
+      // let random = this.get_random(min_max.min, min_max.max, invalid);
+      let random = this.get_random(1, 54, invalid);
       let lote = this.loteria.filter((obj) => obj[0] === random)[0];
       if (i < 15) {
         this.card.push(lote);
       } else {
         lote = this.loteria.filter((obj) => obj[0] === invalid)[0];
-        console.log('lote => ', lote);
         this.card.splice(5, 0, lote);
         this.card.splice(10, 0, lote);
       }
@@ -133,7 +133,7 @@ export class AppComponent implements OnInit {
     this.cards = [];
     this.cards_ordered = [];
 
-    for (let i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 54; i++) {
       this.create_card(i);
       let card_copy = JSON.parse(JSON.stringify(this.card));
       card_copy.sort();
@@ -146,6 +146,8 @@ export class AppComponent implements OnInit {
       this.cards.push(JSON.parse(JSON.stringify(this.card)));
       this.cards_ordered.push(card_copy);
     }
+
+    // this.showData();
   }
 
   public create_specific_cards() {
@@ -173,6 +175,30 @@ export class AppComponent implements OnInit {
       });
       this.cards.push(JSON.parse(JSON.stringify(this.card)));
     }
+  }
+
+  private showData() {
+    this.cards.forEach((el) => {
+      console.log(
+        `${el[0][0].toString().length === 1 ? `0${el[0][0]}` : el[0][0]}-${
+          el[1][0].toString().length === 1 ? `0${el[1][0]}` : el[1][0]
+        }-${el[2][0].toString().length === 1 ? `0${el[2][0]}` : el[2][0]}-${
+          el[3][0].toString().length === 1 ? `0${el[3][0]}` : el[3][0]
+        }-${el[4][0].toString().length === 1 ? `0${el[4][0]}` : el[4][0]}-${
+          el[5][0].toString().length === 1 ? `0${el[5][0]}` : el[5][0]
+        }-${el[6][0].toString().length === 1 ? `0${el[6][0]}` : el[6][0]}-${
+          el[7][0].toString().length === 1 ? `0${el[7][0]}` : el[7][0]
+        }-${el[8][0].toString().length === 1 ? `0${el[8][0]}` : el[8][0]}-${
+          el[9][0].toString().length === 1 ? `0${el[9][0]}` : el[9][0]
+        }-${el[10][0].toString().length === 1 ? `0${el[10][0]}` : el[10][0]}-${
+          el[11][0].toString().length === 1 ? `0${el[11][0]}` : el[11][0]
+        }-${el[12][0].toString().length === 1 ? `0${el[12][0]}` : el[12][0]}-${
+          el[13][0].toString().length === 1 ? `0${el[13][0]}` : el[13][0]
+        }-${el[14][0].toString().length === 1 ? `0${el[14][0]}` : el[14][0]}-${
+          el[15][0].toString().length === 1 ? `0${el[15][0]}` : el[15][0]
+        }`
+      );
+    });
   }
   //#endregion 'General Methods'
 }
