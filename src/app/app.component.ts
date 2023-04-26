@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   //#region 'Variables'
-  loteria = [
+  private loteria = [
     [1, 'gallo', './assets/images/cartas/1.png'],
     [2, 'diablito', './assets/images/cartas/2.png'],
     [3, 'dama', './assets/images/cartas/3.png'],
@@ -63,6 +63,7 @@ export class AppComponent implements OnInit {
     [53, 'arpa', './assets/images/cartas/53.png'],
     [54, 'rana', './assets/images/cartas/54.png'],
   ];
+  private doubles = ['14', '113', '116', '413', '416', '611', '710', '1316'];
 
   public card: any[] = [];
   public cards: any[] = [];
@@ -72,68 +73,112 @@ export class AppComponent implements OnInit {
   public dobles = 'true';
   public cuantas = '0';
   public cantidad = '';
-  public uibicacion = '666';
+  public ubicacion = '666';
   public ubicacionDoblesIMG = './assets/images/orden/666.png';
   //#endregion 'Variables'
 
   //#region 'Angular LifeCycle'
   constructor() {}
 
-  ngOnInit() {
-    this.create_cards();
-  }
+  ngOnInit() {}
   //#endregion 'Angular LifeCycle'
 
   //#region 'General Methods'
-
   public ubicacionDobles(): void {
-    this.ubicacionDoblesIMG = `./assets/images/orden/${this.uibicacion}.png`;
+    this.ubicacionDoblesIMG = `./assets/images/orden/${this.ubicacion}.png`;
   }
 
-  private get_random(min: number, max: number, invalid: number) {
+  public create_cards() {
+    this.cards = [];
+    this.cards_ordered = [];
+    const CANTIDAD = this.cuantas == '0' ? 54 : Number(this.cantidad);
+
+    for (let i = 1; i <= CANTIDAD; i++) {
+      this.create_card(i);
+      let cc = this.cloneData(this.card).sort();
+
+      while (this.cards_ordered.filter((obj) => obj === cc).length > 0) {
+        this.create_card(i);
+        cc = this.cloneData(this.card).sort();
+      }
+
+      this.cards.push(this.cloneData(this.card));
+      this.cards_ordered.push(cc);
+    }
+
+    this.showData();
+  }
+
+  private create_card(double: number) {
+    this.card = [];
+    for (let i = 1; i < 16; i++) {
+      let random = this.get_random(1, 54, double);
+      let lote = this.loteria.filter((obj) => obj[0] === random)[0];
+
+      if (i < 15) {
+        this.card.push(lote);
+      } else {
+        lote = this.loteria.filter((obj) => obj[0] === double)[0];
+        this.setDouble(lote);
+      }
+    }
+  }
+
+  private get_random(min: number, max: number, double: number) {
     let random = Math.floor(Math.random() * (max - min + 1) + min);
     let exist = this.card.filter((obj) => obj[0] === random);
-    while (exist.length > 0 || invalid == random) {
+
+    while (exist.length > 0 || double == random) {
       random = Math.floor(Math.random() * (max - min + 1) + min);
       exist = this.card.filter((obj) => obj[0] === random);
     }
     return random;
   }
 
-  private create_card(invalid: number) {
-    this.card = [];
-    for (let i = 1; i < 16; i++) {
-      let random = this.get_random(1, 54, invalid);
-      let lote = this.loteria.filter((obj) => obj[0] === random)[0];
-      if (i < 15) {
-        this.card.push(lote);
-      } else {
-        lote = this.loteria.filter((obj) => obj[0] === invalid)[0];
-        this.card.splice(5, 0, lote);
-        this.card.splice(10, 0, lote);
-      }
-    }
-  }
+  private setDouble(lote) {
+    let d1 = 0;
+    let d2 = 0;
+    let ran = this.ubicacion;
 
-  public create_cards() {
-    this.cards = [];
-    this.cards_ordered = [];
-
-    for (let i = 1; i <= 54; i++) {
-      this.create_card(i);
-      let card_copy = JSON.parse(JSON.stringify(this.card));
-      card_copy.sort();
-      while (this.cards_ordered.filter((obj) => obj === card_copy).length > 0) {
-        this.create_card(i);
-        card_copy = JSON.parse(JSON.stringify(this.card));
-        card_copy.sort();
-      }
-
-      this.cards.push(JSON.parse(JSON.stringify(this.card)));
-      this.cards_ordered.push(card_copy);
+    if (ran == '666') {
+      ran = this.doubles[Math.floor(Math.random() * 8)];
     }
 
-    // this.showData();
+    if (ran == '14') {
+      d1 = 0;
+      d2 = 3;
+    }
+    if (ran == '113') {
+      d1 = 0;
+      d2 = 12;
+    }
+    if (ran == '116') {
+      d1 = 0;
+      d2 = 15;
+    }
+    if (ran == '413') {
+      d1 = 3;
+      d2 = 12;
+    }
+    if (ran == '416') {
+      d1 = 3;
+      d2 = 15;
+    }
+    if (ran == '611') {
+      d1 = 5;
+      d2 = 10;
+    }
+    if (ran == '710') {
+      d1 = 6;
+      d2 = 9;
+    }
+    if (ran == '1316') {
+      d1 = 12;
+      d2 = 15;
+    }
+
+    this.card.splice(d1, 0, lote);
+    this.card.splice(d2, 0, lote);
   }
 
   public create_specific_cards() {
@@ -159,32 +204,56 @@ export class AppComponent implements OnInit {
         let lote = this.loteria.filter((obj) => obj[0] === t)[0];
         this.card.push(lote);
       });
-      this.cards.push(JSON.parse(JSON.stringify(this.card)));
+      this.cards.push(this.cloneData(this.card));
     }
   }
 
   private showData() {
     this.cards.forEach((el) => {
-      console.log(
-        `${el[0][0].toString().length === 1 ? `0${el[0][0]}` : el[0][0]}-${
-          el[1][0].toString().length === 1 ? `0${el[1][0]}` : el[1][0]
-        }-${el[2][0].toString().length === 1 ? `0${el[2][0]}` : el[2][0]}-${
-          el[3][0].toString().length === 1 ? `0${el[3][0]}` : el[3][0]
-        }-${el[4][0].toString().length === 1 ? `0${el[4][0]}` : el[4][0]}-${
-          el[5][0].toString().length === 1 ? `0${el[5][0]}` : el[5][0]
-        }-${el[6][0].toString().length === 1 ? `0${el[6][0]}` : el[6][0]}-${
-          el[7][0].toString().length === 1 ? `0${el[7][0]}` : el[7][0]
-        }-${el[8][0].toString().length === 1 ? `0${el[8][0]}` : el[8][0]}-${
-          el[9][0].toString().length === 1 ? `0${el[9][0]}` : el[9][0]
-        }-${el[10][0].toString().length === 1 ? `0${el[10][0]}` : el[10][0]}-${
-          el[11][0].toString().length === 1 ? `0${el[11][0]}` : el[11][0]
-        }-${el[12][0].toString().length === 1 ? `0${el[12][0]}` : el[12][0]}-${
-          el[13][0].toString().length === 1 ? `0${el[13][0]}` : el[13][0]
-        }-${el[14][0].toString().length === 1 ? `0${el[14][0]}` : el[14][0]}-${
-          el[15][0].toString().length === 1 ? `0${el[15][0]}` : el[15][0]
-        }`
-      );
+      // console.log(
+      //   `${el[0][0].toString().length === 1 ? `0${el[0][0]}` : el[0][0]}-${
+      //     el[1][0].toString().length === 1 ? `0${el[1][0]}` : el[1][0]
+      //   }-${el[2][0].toString().length === 1 ? `0${el[2][0]}` : el[2][0]}-${
+      //     el[3][0].toString().length === 1 ? `0${el[3][0]}` : el[3][0]
+      //   }-${el[4][0].toString().length === 1 ? `0${el[4][0]}` : el[4][0]}-${
+      //     el[5][0].toString().length === 1 ? `0${el[5][0]}` : el[5][0]
+      //   }-${el[6][0].toString().length === 1 ? `0${el[6][0]}` : el[6][0]}-${
+      //     el[7][0].toString().length === 1 ? `0${el[7][0]}` : el[7][0]
+      //   }-${el[8][0].toString().length === 1 ? `0${el[8][0]}` : el[8][0]}-${
+      //     el[9][0].toString().length === 1 ? `0${el[9][0]}` : el[9][0]
+      //   }-${el[10][0].toString().length === 1 ? `0${el[10][0]}` : el[10][0]}-${
+      //     el[11][0].toString().length === 1 ? `0${el[11][0]}` : el[11][0]
+      //   }-${el[12][0].toString().length === 1 ? `0${el[12][0]}` : el[12][0]}-${
+      //     el[13][0].toString().length === 1 ? `0${el[13][0]}` : el[13][0]
+      //   }-${el[14][0].toString().length === 1 ? `0${el[14][0]}` : el[14][0]}-${
+      //     el[15][0].toString().length === 1 ? `0${el[15][0]}` : el[15][0]
+      //   }`
+      // );
+
+      const DATA = [
+        el[0][0],
+        el[1][0],
+        el[2][0],
+        el[3][0],
+        el[4][0],
+        el[5][0],
+        el[6][0],
+        el[7][0],
+        el[8][0],
+        el[9][0],
+        el[10][0],
+        el[11][0],
+        el[12][0],
+        el[13][0],
+        el[14][0],
+        el[15][0],
+      ].sort();
+      console.log(DATA);
     });
+  }
+
+  private cloneData(data: any): any {
+    return JSON.parse(JSON.stringify(data));
   }
   //#endregion 'General Methods'
 }

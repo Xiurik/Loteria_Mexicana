@@ -1,11 +1,14 @@
 <div class="container">
   <br />
+  <!-- #region Title -->
   <div class="row">
     <div class="col-12">
       <h1>Generador de Cartas de Loteria Mexicana</h1>
     </div>
   </div>
+  <!-- #endregion -->
 
+  <!-- #region Nombre -->
   <div class="row">
     <div class="col-6">
       <div class="form-group">
@@ -21,7 +24,9 @@
     </div>
     <div class="col-6"></div>
   </div>
+  <!-- #endregion -->
 
+  <!-- #region Tipo de Carta -->
   <div class="row">
     <div class="col-6">
       <div class="form-group">
@@ -52,7 +57,9 @@
     </div>
     <div class="col-6"></div>
   </div>
+  <!-- #endregion -->
 
+  <!-- #region Dobles -->
   <div class="row">
     <div class="col-10">
       <div class="form-group">
@@ -61,11 +68,35 @@
           <input
             class="form-check-input"
             type="radio"
+            name="666"
+            id="666"
+            value="666"
+            (change)="ubicacionDobles()"
+            [(ngModel)]="ubicacion"
+          />
+          <label class="form-check-label" for="666">Aleatorio</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="14"
+            id="14"
+            value="14"
+            (change)="ubicacionDobles()"
+            [(ngModel)]="ubicacion"
+          />
+          <label class="form-check-label" for="14">Centro (1 y 4)</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
             name="710"
             id="710"
             value="710"
             (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
+            [(ngModel)]="ubicacion"
           />
           <label class="form-check-label" for="710">Centro (7 y 10)</label>
         </div>
@@ -77,7 +108,7 @@
             id="611"
             value="611"
             (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
+            [(ngModel)]="ubicacion"
           />
           <label class="form-check-label" for="611">Centro (6 y 11)</label>
         </div>
@@ -89,7 +120,7 @@
             id="116"
             value="116"
             (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
+            [(ngModel)]="ubicacion"
           />
           <label class="form-check-label" for="116">Esquinas (1 y 16)</label>
         </div>
@@ -101,7 +132,7 @@
             id="413"
             value="413"
             (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
+            [(ngModel)]="ubicacion"
           />
           <label class="form-check-label" for="413">Esquinas (4 y 13)</label>
         </div>
@@ -113,7 +144,7 @@
             id="113"
             value="113"
             (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
+            [(ngModel)]="ubicacion"
           />
           <label class="form-check-label" for="113">Esquinas (1 y 13)</label>
         </div>
@@ -125,21 +156,9 @@
             id="416"
             value="416"
             (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
+            [(ngModel)]="ubicacion"
           />
           <label class="form-check-label" for="416">Esquinas (4 y 16)</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="666"
-            id="666"
-            value="666"
-            (change)="ubicacionDobles()"
-            [(ngModel)]="uibicacion"
-          />
-          <label class="form-check-label" for="666">Aleatorio</label>
         </div>
       </div>
     </div>
@@ -149,7 +168,9 @@
     </div>
   </div>
   <br />
+  <!-- #endregion -->
 
+  <!-- #region Cartas a Generar -->
   <div class="row">
     <div class="col-6">
       <div class="form-group">
@@ -180,7 +201,18 @@
     </div>
     <div class="col-6"></div>
   </div>
+  <!-- #endregion -->
 
+  <!-- #region Boton -->
+  <div class="row">
+    <div class="col-2">
+      <button type="button" class="btn btn-primary" (click)="create_cards()">Generar Loteria</button>
+    </div>
+    <div class="col-10"></div>
+  </div>
+  <!-- #endregion -->
+
+  <!-- #region Loteria -->
   <div [id]="'loteria-' + i" class="loteria" *ngFor="let c of cards; let i = index">
     <div class="row">
       <div class="col-11">
@@ -195,4 +227,5 @@
       </div>
     </div>
   </div>
+  <!-- #endregion -->
 </div>
